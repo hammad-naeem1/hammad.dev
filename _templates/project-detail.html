@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="[Short, factual description of the project]">
+    <title>[Project name] — hammad.dev</title>
+    <link rel="stylesheet" href="../../styles.css">
+    <style>
+      .entry-page { width: min(850px, calc(100% - 48px)); margin: auto; padding: 72px 0 110px; }
+      .entry-back { display: inline-block; margin-bottom: 55px; color: var(--navy); font-size: 12px; text-decoration-color: var(--coral); text-underline-offset: 5px; }
+      .entry-label { font-family: var(--mono); font-size: 9px; letter-spacing: .12em; color: var(--ink-soft); text-transform: uppercase; }
+      .entry-page h1 { max-width: 800px; margin: 18px 0; font-size: clamp(48px, 9vw, 88px); line-height: .96; letter-spacing: -.075em; }
+      .entry-page h1 em { font-family: var(--serif); font-weight: 400; }
+      .entry-summary { max-width: 640px; margin: 0; font-family: var(--serif); font-size: 23px; line-height: 1.45; }
+      .entry-meta { margin: 38px 0 55px; padding: 16px 0; display: flex; flex-wrap: wrap; gap: 16px 30px; border-block: 1px solid var(--line); font-family: var(--mono); font-size: 9px; }
+      .entry-content { display: grid; grid-template-columns: 1fr 2.2fr; gap: 25px; border-top: 1px solid var(--line); padding: 27px 0; }
+      .entry-content h2 { margin: 0; font-family: var(--serif); font-size: 22px; font-weight: 400; }
+      .entry-content p, .entry-content li { margin: 0 0 12px; color: #3f4c65; font-size: 13px; line-height: 1.8; }
+      .entry-content ul { margin: 0; padding-left: 18px; }
+      .entry-content a { text-underline-offset: 3px; }
+      .entry-footer { margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--line); }
+      @media (max-width: 600px) { .entry-page { padding-top: 45px; } .entry-back { margin-bottom: 40px; } .entry-content { grid-template-columns: 1fr; gap: 12px; } .entry-meta { margin: 28px 0 38px; } }
+    </style>
+  </head>
+  <body>
+    <!-- Starter template only. Copy this file into projects/<slug>/index.html and replace every bracketed field before publishing. -->
+    <main class="entry-page">
+      <a class="entry-back" href="../../index.html#projects">← Back to projects</a>
+      <p class="entry-label">PROJECT NOTE / [YEAR]</p>
+      <h1>[Project name]<br><em>[Short subtitle]</em></h1>
+      <p class="entry-summary">[One or two clear sentences describing what the project does and why you explored it.]</p>
+      <div class="entry-meta"><span>STATUS: [IN PROGRESS / COMPLETE]</span><span>TOOLS: [TECHNOLOGIES]</span><a href="[REPOSITORY URL]">SOURCE CODE ↗</a></div>
+      <section class="entry-content"><h2>The question</h2><div><p>[What problem or question did this project explore?]</p></div></section>
+      <section class="entry-content"><h2>Data &amp; context</h2><div><p>[Describe the dataset and its source, or explain that no dataset was used.]</p></div></section>
+      <section class="entry-content"><h2>Approach</h2><div><p>[Describe the methods and decisions. Link to relevant documentation when useful.]</p></div></section>
+      <section class="entry-content"><h2>Findings</h2><div><p>[Report actual results. Add charts or visualizations with helpful alt text where applicable.]</p></div></section>
+      <section class="entry-content"><h2>What I learned</h2><div><p>[Describe what worked, what did not, and what you would explore next.]</p></div></section>
+      <p class="entry-footer entry-label"><a href="../../index.html#projects">← More projects at hammad.dev</a></p>
+    </main>
+  </body>
+</html>
