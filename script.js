@@ -1,3 +1,76 @@
+const themeToggle = document.querySelector(".theme-toggle");
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+
+const updateThemeControl = (theme) => {
+  document.documentElement.dataset.theme = theme;
+  if (themeToggle) themeToggle.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} mode`);
+  if (themeColorMeta) themeColorMeta.setAttribute("content", theme === "dark" ? "#0b1017" : "#f4ede0");
+};
+
+updateThemeControl(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+
+if (themeToggle) {
+  themeToggle.addEventListener("click", () => {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    updateThemeControl(nextTheme);
+    try {
+      localStorage.setItem("hammad-theme", nextTheme);
+    } catch {
+      // The theme still works for this visit if storage is unavailable.
+    }
+  });
+}
+
+const cookieBanner = document.querySelector(".cookie-banner");
+if (cookieBanner) {
+  let savedCookieChoice = null;
+  try {
+    savedCookieChoice = localStorage.getItem("hammad-cookie-consent");
+  } catch {
+    // Consent can still be chosen for this visit if storage is unavailable.
+  }
+
+  if (savedCookieChoice) {
+    cookieBanner.hidden = true;
+  } else {
+    cookieBanner.hidden = false;
+
+    const revealCookieBanner = () => {
+      window.setTimeout(() => cookieBanner.classList.add("is-visible"), 1200);
+    };
+
+    if (document.readyState === "complete") {
+      revealCookieBanner();
+    } else {
+      window.addEventListener("load", revealCookieBanner, { once: true });
+    }
+
+    cookieBanner.addEventListener("click", (event) => {
+      const choiceButton = event.target.closest("[data-cookie-choice]");
+      if (!choiceButton || !cookieBanner.classList.contains("is-visible")) return;
+
+      try {
+        localStorage.setItem("hammad-cookie-consent", choiceButton.dataset.cookieChoice);
+      } catch {
+        // The banner still dismisses for this visit if storage is unavailable.
+      }
+
+      const hideAfterTransition = (transitionEvent) => {
+        if (transitionEvent.target !== cookieBanner || transitionEvent.propertyName !== "opacity") return;
+        cookieBanner.removeEventListener("transitionend", hideAfterTransition);
+        cookieBanner.hidden = true;
+      };
+
+      cookieBanner.addEventListener("transitionend", hideAfterTransition);
+      cookieBanner.classList.remove("is-visible");
+      window.setTimeout(() => {
+        cookieBanner.removeEventListener("transitionend", hideAfterTransition);
+        cookieBanner.hidden = true;
+      }, 600);
+    });
+  }
+}
+
 const menuButton = document.querySelector(".menu-toggle");
 const primaryNav = document.querySelector(".primary-nav");
 const navLinks = [...document.querySelectorAll('.primary-nav a[href^="#"]')];
@@ -87,7 +160,7 @@ const revealSelector = [
   ".footer-bottom > *"
 ].join(",");
 const revealTargets = [...document.querySelectorAll(revealSelector)];
-const popTargets = [...document.querySelectorAll("button, .nav-contact, .text-link, .round-link, .connect-card, .contact-button")];
+const popTargets = [...document.querySelectorAll("button:not(.theme-toggle), .nav-contact, .text-link, .round-link, .connect-card, .contact-button")];
 const spotlightCards = [...document.querySelectorAll(".hero-note, .field-row, .empty-projects, .notebook-empty, .deployment-panel, .connect-card")];
 
 spotlightCards.forEach((card) => {
@@ -146,7 +219,7 @@ if ("IntersectionObserver" in window && (revealTargets.length || popTargets.leng
   revealTargets.forEach((element) => element.classList.add("scroll-reveal", "visible"));
 }
 
-const rippleSelector = "button, .connect-card, .round-link, .nav-contact, .contact-button";
+const rippleSelector = "button:not(.theme-toggle), .connect-card, .round-link, .nav-contact, .contact-button";
 document.addEventListener("click", (event) => {
   const control = event.target.closest(rippleSelector);
   if (!control) return;
