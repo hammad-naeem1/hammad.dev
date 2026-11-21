@@ -20,30 +20,48 @@ if (menuButton && primaryNav) {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMenu();
   });
-
-  const sections = navLinks
-    .map((link) => document.querySelector(link.getAttribute("href")))
-    .filter(Boolean);
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        navLinks.forEach((link) => {
-          if (link.getAttribute("href") === `#${entry.target.id}`) {
-            link.setAttribute("aria-current", "location");
-          } else {
-            link.removeAttribute("aria-current");
-          }
-        });
-      });
-    }, { rootMargin: "-25% 0px -65% 0px" });
-    sections.forEach((section) => observer.observe(section));
-  }
 }
+
+const sections = navLinks
+  .map((link) => document.querySelector(link.getAttribute("href")))
+  .filter(Boolean);
+
+const updateActiveNav = () => {
+  const focusLine = Math.min(window.innerHeight * 0.32, 250);
+  const currentSection = sections
+    .filter((section) => {
+      const bounds = section.getBoundingClientRect();
+      return bounds.top <= focusLine && bounds.bottom > focusLine;
+    })
+    .sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)[0];
+
+  navLinks.forEach((link) => {
+    if (currentSection && link.hash === `#${currentSection.id}`) {
+      link.setAttribute("aria-current", "location");
+    } else {
+      link.removeAttribute("aria-current");
+    }
+  });
+};
+
+window.addEventListener("scroll", updateActiveNav, { passive: true });
+window.addEventListener("resize", updateActiveNav);
+updateActiveNav();
 
 const year = document.querySelector("#year");
 if (year) year.textContent = new Date().getFullYear();
+
+const progressFill = document.querySelector(".scroll-progress span");
+const updateScrollProgress = () => {
+  if (!progressFill) return;
+  const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = scrollable > 0 ? Math.max(0, Math.min(window.scrollY / scrollable, 1)) : 0;
+  progressFill.style.transform = `scaleX(${progress})`;
+};
+
+window.addEventListener("scroll", updateScrollProgress, { passive: true });
+window.addEventListener("resize", updateScrollProgress);
+updateScrollProgress();
 
 const revealSelector = [
   "main > section:not(.hero)",
@@ -69,16 +87,20 @@ const revealSelector = [
   ".footer-bottom > *"
 ].join(",");
 const revealTargets = [...document.querySelectorAll(revealSelector)];
+const popTargets = [...document.querySelectorAll("button, .nav-contact, .text-link, .round-link, .connect-card, .contact-button")];
+const spotlightCards = [...document.querySelectorAll(".hero-note, .field-row, .empty-projects, .notebook-empty, .deployment-panel, .connect-card")];
 
-if ("IntersectionObserver" in window && revealTargets.length) {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("is-revealed");
-      observer.unobserve(entry.target);
-    });
-  }, { threshold: 0.15, rootMargin: "0px 0px -60px 0px" });
+spotlightCards.forEach((card) => {
+  card.classList.add("spotlight-card");
+  card.addEventListener("pointermove", (event) => {
+    if (event.pointerType !== "mouse") return;
+    const bounds = card.getBoundingClientRect();
+    card.style.setProperty("--mouse-x", `${event.clientX - bounds.left}px`);
+    card.style.setProperty("--mouse-y", `${event.clientY - bounds.top}px`);
+  });
+});
 
+if ("IntersectionObserver" in window && (revealTargets.length || popTargets.length)) {
   revealTargets.forEach((element) => element.classList.add("scroll-reveal"));
 
   const staggerGroups = [
@@ -102,19 +124,26 @@ if ("IntersectionObserver" in window && revealTargets.length) {
     });
   });
 
-  // Keep the first viewport focused on the hero. Start observing only after
-  // the page has actually moved, so initial viewport intersections stay hidden.
-  let revealStarted = false;
-  const startRevealsAfterScroll = () => {
-    if (revealStarted || window.scrollY <= 0) return;
-    revealStarted = true;
-    revealTargets.forEach((element) => revealObserver.observe(element));
-    window.removeEventListener("scroll", startRevealsAfterScroll);
-  };
-  window.addEventListener("scroll", startRevealsAfterScroll, { passive: true });
+  const revealSet = new Set(revealTargets);
+  const popSet = new Set(popTargets);
+  const observerTargets = new Set([...revealTargets, ...popTargets]);
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const { target, isIntersecting } = entry;
+
+      if (revealSet.has(target)) {
+        target.classList.toggle("visible", isIntersecting);
+      }
+      if (popSet.has(target)) {
+        target.classList.toggle("scroll-pop", isIntersecting);
+      }
+    });
+  }, { threshold: 0, rootMargin: "0px" });
+
+  observerTargets.forEach((element) => revealObserver.observe(element));
 } else {
-  // Keep content available in browsers without IntersectionObserver.
-  revealTargets.forEach((element) => element.classList.add("is-revealed"));
+  // Keep all content available where IntersectionObserver is unavailable.
+  revealTargets.forEach((element) => element.classList.add("scroll-reveal", "visible"));
 }
 
 const rippleSelector = "button, .connect-card, .round-link, .nav-contact, .contact-button";
