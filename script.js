@@ -44,3 +44,31 @@ if (menuButton && primaryNav) {
 
 const year = document.querySelector("#year");
 if (year) year.textContent = new Date().getFullYear();
+
+const prefersReducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+if (!prefersReducedMotion && "IntersectionObserver" in window) {
+  const revealTargets = document.querySelectorAll([
+    "main > section:not(.hero)",
+    ".field-row",
+    ".empty-projects",
+    ".notebook-empty",
+    ".deployment-panel",
+    ".connect-card",
+    ".footer-main",
+    ".footer-bottom"
+  ].join(","));
+
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-revealed");
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.05, rootMargin: "0px 0px -8% 0px" });
+
+  revealTargets.forEach((element) => {
+    if (element.getBoundingClientRect().top < window.innerHeight) return;
+    element.classList.add("scroll-reveal");
+    revealObserver.observe(element);
+  });
+}

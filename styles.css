@@ -162,6 +162,22 @@ a { color: inherit; }
 .deployment-orbit i { position: absolute; top: 136px; left: 15px; width: 6px; height: 6px; border-radius: 50%; background: var(--cream); }
 .deployment-orbit b { position: absolute; top: 113px; left: 139px; color: rgba(244, 237, 224, .35); font-family: var(--mono); font-size: 13px; font-weight: 400; }
 
+.connect-section { padding-block: 0 112px; }
+.connect-section .section-kicker { margin-bottom: 43px; }
+.connect-heading { margin-bottom: 35px; display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; }
+.connect-heading .section-title { font-size: clamp(45px, 5.4vw, 72px); }
+.connect-heading .section-title em { color: var(--coral); }
+.connect-heading > p { max-width: 300px; margin: 0 0 7px; color: var(--ink-soft); font-size: 12px; line-height: 1.7; }
+.connect-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.connect-card { position: relative; min-height: 155px; padding: 19px 20px; display: flex; flex-direction: column; align-items: flex-start; border: 1px solid rgba(20, 33, 61, .2); background: rgba(255, 250, 241, .52); text-decoration: none; transition: color .2s ease, background .2s ease, border-color .2s ease, transform .2s ease; }
+.connect-card:hover, .connect-card:focus-visible { color: var(--cream); background: var(--navy); border-color: var(--navy); transform: translateY(-3px); }
+.connect-index { color: var(--ink-soft); font-family: var(--mono); font-size: 7px; letter-spacing: .1em; }
+.connect-card:hover .connect-index, .connect-card:focus-visible .connect-index { color: rgba(244, 237, 224, .58); }
+.connect-name { margin-top: 18px; font-family: var(--serif); font-size: 23px; letter-spacing: -.03em; }
+.connect-detail { margin-top: 6px; color: var(--ink-soft); font-size: 9px; line-height: 1.5; }
+.connect-card:hover .connect-detail, .connect-card:focus-visible .connect-detail { color: rgba(244, 237, 224, .68); }
+.connect-arrow { position: absolute; right: 18px; bottom: 17px; color: var(--coral); font-size: 14px; }
+
 .contact-section { color: var(--cream); background: var(--coral); }
 .contact-inner { position: relative; min-height: 350px; padding-block: 66px; display: grid; grid-template-columns: 1fr auto; align-content: center; align-items: center; gap: 15px 8%; }
 .contact-inner .mono-label { color: rgba(20, 33, 61, .7); }
@@ -289,6 +305,16 @@ a { color: inherit; }
   .deployment-spec strong { font-size: 9px; }
   .spec-status strong { font-size: 6px; }
   .deployment-orbit { right: -220px; bottom: 70px; width: 310px; height: 310px; opacity: .7; }
+  .connect-section { padding-bottom: 78px; }
+  .connect-section .section-kicker { margin-bottom: 34px; }
+  .connect-heading { align-items: flex-start; flex-direction: column; gap: 14px; margin-bottom: 27px; }
+  .connect-heading .section-title { font-size: clamp(45px, 11vw, 65px); }
+  .connect-heading > p { max-width: 340px; margin: 0; font-size: 11px; }
+  .connect-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .connect-card { min-height: 140px; padding: 16px; }
+  .connect-name { margin-top: 17px; font-size: 21px; }
+  .connect-detail { max-width: calc(100% - 12px); font-size: 8px; }
+  .connect-arrow { right: 14px; bottom: 14px; }
   .contact-inner { min-height: 0; padding-block: 60px; grid-template-columns: 1fr; gap: 23px; }
   .contact-inner h2 { font-size: clamp(47px, 11vw, 67px); }
   .contact-button { width: 164px; }
@@ -310,8 +336,14 @@ a { color: inherit; }
   .empty-glyph::before { inset: 6px; }
   .empty-glyph::after { inset: 21px; }
   .empty-copy h3 { font-size: 19px; }
+  .connect-grid { grid-template-columns: 1fr; }
+  .connect-card { min-height: 125px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .scroll-reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
+
+.scroll-reveal { opacity: 0; transform: translateY(25px); transition: opacity .65s ease, transform .65s cubic-bezier(.2, .65, .3, 1); }
+.scroll-reveal.is-revealed { opacity: 1; transform: translateY(0); }
